@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_hm"
+        android:icon="@drawable/hom"
+        android:title="Home" />
+
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/profilee"
+        android:title="My Profile" />
+
+<!--    <item-->
+<!--        android:id="@+id/nav_add_train"-->
+<!--        android:icon="@drawable/ic_baseline_train_24"-->
+<!--        android:title="Add Train" />-->
+
+<!--    <item-->
+<!--        android:id="@+id/nav_add_coach"-->
+<!--        android:icon="@drawable/ic_baseline_person_add_24"-->
+<!--        android:title="Add Coach" />-->
+
+    <item
+        android:id="@+id/nav_changePassword"
+        android:icon="@drawable/ic_baseline_lock_open_24"
+        android:title="Change Password" />
+    <item
+        android:id="@+id/nav_history"
+        android:icon="@drawable/ic_baseline_history_24"
+        android:title="Login History" />
+
+    <item
+        android:id="@+id/nav_device_status"
+        android:icon="@drawable/ic_baseline_device_unknown_24"
+        android:title="Device Status" />
+
+    <item
+        android:id="@+id/nav_logOut"
+        android:icon="@drawable/logut"
+        android:title="Log Out" />
+
+
+</menu>
