@@ -23,20 +23,18 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.sedulous.fsdsdanapur.LoginActivity;
 import com.sedulous.fsdsdanapur.Model.LoginModel;
-import com.sedulous.fsdsdanapur.O;
+import com.sedulous.fsdsdanapur.Utils.O;
 import com.sedulous.fsdsdanapur.R;
+import com.sedulous.fsdsdanapur.Utils.URLS;
 
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Objects;
 
 public class ChangePasswordFragment extends Fragment {
+    private LoginModel loginModel;
     private EditText changePassword, confirmPassword;
     private AppCompatButton change_button;
-    private String changepasswordUrl = "http://fsds.projectrailway.in/api/change_password";
-    private LoginModel loginModel;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -95,7 +93,7 @@ public class ChangePasswordFragment extends Fragment {
         Log.d("body", reqbody);
         O.show_aleart_dialog(requireActivity(), R.layout.progress_alert_dialog, "Wait a second ...");
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, changepasswordUrl, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URLS.changePassword, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {

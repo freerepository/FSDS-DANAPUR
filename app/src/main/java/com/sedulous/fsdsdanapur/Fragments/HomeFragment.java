@@ -1,14 +1,10 @@
 package com.sedulous.fsdsdanapur.Fragments;
 
-import static android.content.Context.INPUT_METHOD_SERVICE;
-
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,7 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,29 +23,27 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.sedulous.fsdsdanapur.Model.Get_Coach_Model;
-import com.sedulous.fsdsdanapur.O;
+import com.sedulous.fsdsdanapur.Utils.HttpsTrustManager;
+import com.sedulous.fsdsdanapur.Utils.O;
 import com.sedulous.fsdsdanapur.R;
+import com.sedulous.fsdsdanapur.Utils.URLS;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class HomeFragment extends Fragment {
-
-    public String get_coach_url = "http://fsds.projectrailway.in/api/get_train_coaches";
     RecyclerView recyclerView;
     SwipeRefreshLayout srl;
     private TextView notfoundText;
-
     private ImageView search_button;
     HomeCoachAdapter adapter;
     private ArrayList<Get_Coach_Model.CoachData> allTrainNumbers;
@@ -133,17 +126,14 @@ public class HomeFragment extends Fragment {
 
         final String requestBody = jsonObject.toString();
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, get_coach_url,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URLS.get_coach_url,
                 response -> {
-                    Log.d("BedrollStocking", "Response: " + response); // Log the response
+                    Log.d("train", "Response: " + response); // Log the response
                     try {
                         Get_Coach_Model get_coach_model = new Gson().fromJson(response, Get_Coach_Model.class);
 
-                        // Update data list and notify adapter
                         allTrainNumbers.clear();
                         allTrainNumbers.addAll(get_coach_model.coachDataList);
-
-                        // Initialize adapter if not already initialized
                         if (adapter == null) {
                             adapter = new HomeCoachAdapter(allTrainNumbers);
                             recyclerView.setAdapter(adapter);
@@ -151,16 +141,15 @@ public class HomeFragment extends Fragment {
                             adapter.notifyDataSetChanged();
                         }
 
-//                        // Check and update visibility based on data availability
                         checkEmptyData();
                     } catch (Exception e) {
-                        Log.e("BedrollStocking", "Parsing error: " + e.getMessage(), e);
+                        Log.e("train", "Parsing error: " + e.getMessage(), e);
                     } finally {
                         srl.setRefreshing(false); // Stop refreshing animation
                     }
                 },
                 error -> {
-                    Log.e("BedrollStocking", "Error Response: " + error.getMessage(), error);
+                    Log.e("train", "Error Response: " + error.getMessage(), error);
                     srl.setRefreshing(false); // Stop refreshing animation
                 }) {
             @Override
@@ -173,9 +162,18 @@ public class HomeFragment extends Fragment {
                 try {
                     return requestBody == null ? null : requestBody.getBytes("utf-8");
                 } catch (UnsupportedEncodingException uee) {
-                    Log.e("BedrollStocking", "Encoding error: " + uee.getMessage(), uee);
+                    Log.e("train", "Encoding error: " + uee.getMessage(), uee);
                     return null;
                 }
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                String userAgent = "Mozilla/5.0 (Linux; Android " + Build.VERSION.RELEASE + "; " + Build.MANUFACTURER + " " + Build.MODEL + ")";
+                headers.put("Content-Type", "application/json");
+                headers.put("User-Agent", userAgent);
+                return headers;
             }
         };
 
@@ -184,7 +182,7 @@ public class HomeFragment extends Fragment {
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         ));
-
+        HttpsTrustManager.allowAllSSL();
         RequestQueue requestQueue = Volley.newRequestQueue(requireContext());
         requestQueue.add(stringRequest);
     }
@@ -226,7 +224,7 @@ public class HomeFragment extends Fragment {
 //                holder.switchButton.setImageResource(R.drawable.switch_on);
 //            }
 
-            if (data.switchStatus=="1"){
+            if (Objects.equals(data.switchStatus, "1")){
                 holder.switchButton.setImageResource(R.drawable.switch_on);
             }else{
                 holder.switchButton.setImageResource(R.drawable.switch_off);

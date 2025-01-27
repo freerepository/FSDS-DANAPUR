@@ -1,6 +1,6 @@
 package com.sedulous.fsdsdanapur.Fragments;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,32 +14,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import com.sedulous.fsdsdanapur.Model.Get_Coach_Model;
 import com.sedulous.fsdsdanapur.Model.LogInHistoryModel;
 import com.sedulous.fsdsdanapur.Model.LoginModel;
-import com.sedulous.fsdsdanapur.O;
+import com.sedulous.fsdsdanapur.Utils.O;
 import com.sedulous.fsdsdanapur.R;
+import com.sedulous.fsdsdanapur.Utils.URLS;
 
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class LoginHistoryFragment extends Fragment {
-
-    private final String loginHistoryUrl = "http://fsds.projectrailway.in/api/get_loginHistory";
     RecyclerView recyclerView;
     SwipeRefreshLayout srl;
     private TextView notfoundText;
@@ -90,7 +86,7 @@ public class LoginHistoryFragment extends Fragment {
 
         final String requestBody = jsonObject.toString();
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, loginHistoryUrl,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URLS.loginHistoryUrl,
                 response -> {
                     Log.d("loginerror_response", "Response: " + response); // Log the response
                     try {
@@ -170,10 +166,22 @@ public class LoginHistoryFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull LoginViewHolder holder, int position) {
+
+
             LogInHistoryModel.UserLoginData data = arrayList.get(position);
             holder.indexTextview.setText(String.valueOf(position+1));
             holder.username.setText(data.name);
-            holder.loginTime.setText(data.last_login);
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            try {
+                Date date = inputFormat.parse(data.last_login);
+                @SuppressLint("SimpleDateFormat")
+                SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                String formattedDate = outputFormat.format(date);
+                holder.loginTime.setText(formattedDate);
+            }catch (Exception e){
+                Log.d("datelog", "onBindViewHolder: "+e.getMessage());
+            }
         }
 
         @Override

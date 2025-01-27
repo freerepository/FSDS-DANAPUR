@@ -1,4 +1,4 @@
-package com.sedulous.fsdsdanapur;
+package com.sedulous.fsdsdanapur.Utils;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
@@ -50,6 +50,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.sedulous.fsdsdanapur.R;
 
 import java.io.File;
 import java.io.FileInputStream;

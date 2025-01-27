@@ -3,14 +3,13 @@ package com.sedulous.fsdsdanapur.Fragments;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.sedulous.fsdsdanapur.O;
+import com.sedulous.fsdsdanapur.Utils.O;
 import com.sedulous.fsdsdanapur.R;
 public class NextTrainScreenFragment extends Fragment {
 

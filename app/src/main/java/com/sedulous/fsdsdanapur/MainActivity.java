@@ -1,43 +1,30 @@
 package com.sedulous.fsdsdanapur;
 
-import static com.sedulous.fsdsdanapur.O.alertLayout;
-import static com.sedulous.fsdsdanapur.O.dialog;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
-import com.sedulous.fsdsdanapur.Fragments.AddCoachFragment;
-import com.sedulous.fsdsdanapur.Fragments.AddTrainFragment;
 import com.sedulous.fsdsdanapur.Fragments.ChangePasswordFragment;
 import com.sedulous.fsdsdanapur.Fragments.DeviceStatusFragment;
 import com.sedulous.fsdsdanapur.Fragments.HomeFragment;
 import com.sedulous.fsdsdanapur.Fragments.LoginHistoryFragment;
 import com.sedulous.fsdsdanapur.Fragments.NextTrainScreenFragment;
 import com.sedulous.fsdsdanapur.Fragments.ProfileFragment;
+import com.sedulous.fsdsdanapur.Utils.O;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -71,6 +58,13 @@ public class MainActivity extends AppCompatActivity {
                 drawerLayout.open();
             }
         });
+
+//        if (savedInstanceState == null) {
+//            getSupportFragmentManager().beginTransaction()
+//                    .replace(R.id.drawerLayout, new NextTrainScreenFragment())
+//                    .addToBackStack(null) // Add to back stack
+//                    .commit();
+//        }
 
         NextTrainScreenFragment nextTrainScreenFragment = new NextTrainScreenFragment();
         O.loadFragments(nextTrainScreenFragment, getSupportFragmentManager(), drawerLayout, R.id.content_frame);
@@ -209,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.nav_logOut:
                         if (drawerLayout != null) {
                             drawerLayout.closeDrawer(GravityCompat.START);
-                            logout_out_dialog();
+                            logout_out_dialog("Are you sure to Logout?", "finish");
                         }
                         break;
                     default:
@@ -226,32 +220,41 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void logout_out_dialog() {
+    private void logout_out_dialog(String dialogMessage, String actionString) {
         final Dialog dialog = new Dialog(MainActivity.this, R.style.Dialog);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         dialog.setCancelable(false);
         dialog.setContentView(R.layout.dialog);
         final TextView tvTextview = dialog.findViewById(R.id.tv);
-        tvTextview.setText("Are you sure to Logout?");
+        tvTextview.setText(dialogMessage);
         TextView t_negative = dialog.findViewById(R.id.v_negative);
         TextView t_positive = dialog.findViewById(R.id.v_positive);
 
         t_positive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 try {
                      startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                     finish();
+//                     if (actionString.equals("finish")){
+//                         finish();
+//                     }else if (actionString.equals("exit")){
+//                         android.os.Process.killProcess(android.os.Process.myPid());
+////                        System.exit(0);
+//                     }
+                    if (actionString.equals("finish")) {
+                        finishAffinity();
+                    } else if (actionString.equals("exit")) {
+                        finishAffinity();
+                        android.os.Process.killProcess(android.os.Process.myPid()); // Forcefully kill the app process
+                    }
+
                 } catch (Exception e) {
                     throw new RuntimeException(e);
-
                 }
             }
 
         });
-
         t_negative.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -260,7 +263,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         dialog.show();
-
-
+    }
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
+            finishAffinity();
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            finish();
+        } else {
+            getSupportFragmentManager().popBackStack();
+        }
     }
 }

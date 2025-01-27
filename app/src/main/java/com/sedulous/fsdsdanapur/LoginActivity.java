@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -20,12 +19,13 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.sedulous.fsdsdanapur.Model.LoginModel;
+import com.sedulous.fsdsdanapur.Utils.O;
+import com.sedulous.fsdsdanapur.Utils.URLS;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
     private AppCompatButton login;
